@@ -1,8 +1,7 @@
 import pygame
 from start_screen import start_screen
 
-
-FPS = 60
+FPS = 60  # test
 
 
 def main() -> None:
