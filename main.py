@@ -1,7 +1,11 @@
 import pygame
 from start_screen import start_screen
 
-FPS = 60  # test
+FPS = 60
+W, H = 10, 20
+TILE = 45
+
+game_size = W * TILE, H * TILE
 
 
 def main() -> None:
@@ -9,7 +13,7 @@ def main() -> None:
     Main body of the whole game. This like a container form where we can start the game or change settings
     """
     pygame.init()
-    size = pygame.display.get_desktop_sizes()[0]
+    size = game_size
     surface = pygame.display.set_mode(size)
     clock = pygame.time.Clock()
 

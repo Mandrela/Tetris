@@ -1,6 +1,10 @@
 import pygame
 from icecream import ic
 
+TILE = 45
+
+grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE) for x in range(10) for y in range(20)]
+
 
 class Text:
     def __init__(self, pos: tuple[float, float], text: str, color: str = '#FFFFFF',
@@ -26,7 +30,7 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
     :returns: True if start_screen was escaped correctly (space bar) False otherwise
     """
     h, w = ic(surface.get_rect()[2:])
-    text = Text((h // 2, w // 2), 'Test')
+    text = Text((h // 2, w // 2), '')
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -36,6 +40,7 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
         surface.fill('#000000')
 
         text.render(surface)
+        [pygame.draw.rect(surface, (40, 40, 40), i_rect, 1) for i_rect in grid]
 
         pygame.display.flip()
         clock.tick(fps)
