@@ -1,9 +1,15 @@
 import pygame
 from icecream import ic
+from figures import *
 
 TILE = 45
+W, H = 10, 20
 
-grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE) for x in range(10) for y in range(20)]
+grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE)
+        for x in range(10) for y in range(20)]
+
+
+anim_count, anim_speed, anim_limit = 0, 60, 2000
 
 
 class Text:
@@ -30,17 +36,47 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
     :returns: True if start_screen was escaped correctly (space bar) False otherwise
     """
     h, w = ic(surface.get_rect()[2:])
-    text = Text((h // 2, w // 2), '')
+    text = Text((h // 2, w // 2), 'Test')
     while True:
+        dx = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
             if event.type == pygame.KEYUP and event.key == 32:
                 return True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT and figure[1].x > 0 and figure != figures[4] and figure != figures[6]:
+                    dx = -1
+                if event.key == pygame.K_LEFT and figure[1].x > 1 and (figure == figures[4] or figure == figures[6]):
+                    dx = -1
+                elif event.key == pygame.K_RIGHT and figure[3].x < W - 1 and figure != figures[3] and figure != figures[4] and figure != figures[6]:
+                    dx = 1
+                elif event.key == pygame.K_RIGHT and figure[3].x < W - 2 and (figure == figures[3] or figure == figures[4] or figure == figures[6]):
+                    dx = 1
         surface.fill('#000000')
+        # text.render(surface)
 
-        text.render(surface)
-        [pygame.draw.rect(surface, (40, 40, 40), i_rect, 1) for i_rect in grid]
+        # move x
+        for i in range(4):
+            figure[i].x += dx
+        
+        # move y
+        anim_count += anim_speed
+        if anim_count > anim_limit:
+            anim_count = 0
+            for i in range(4):
+                figure[i].y += 1
+        
+
+        # прорисовка сетки
+        [pygame.draw.rect(surface, (40, 40, 40), i_rect, 1)
+         for i_rect in grid]
+
+        # draw figure
+        for i in range(4):
+            figure_rect.x = figure[i].x * TILE
+            figure_rect.y = figure[i].y * TILE
+            pygame.draw.rect(surface, pygame.Color('White'), figure_rect)
 
         pygame.display.flip()
         clock.tick(fps)
