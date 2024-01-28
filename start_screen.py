@@ -116,12 +116,10 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
     text_flag = False
     dtime = 1
     while True:
-        dx = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
             if event.type == pygame.KEYUP and end_anim_flag and text_flag:
-                return True
                 vfx.append(EndAnim(w, h))
                 end_anim_flag = False
         surface.blit(bg, (0, 0))
