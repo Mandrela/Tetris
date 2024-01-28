@@ -1,24 +1,25 @@
 import pygame
 from start_screen import start_screen
+from game import game
+from icecream import ic
 
 FPS = 60
-W, H = 10, 20
-TILE = 45
-
-game_size = W * TILE, H * TILE
 
 
-def main() -> None:  # Я короче не особо понял где надо было код писать, если сможешь переместить все в main было бы славно, а то у меня тут не особо работало, а там по кд ошибка UnboundLocalError: local variable 'какая-то переменная' referenced before assignment
+def main() -> None:
     """
     Main body of the whole game. This like a container form where we can start the game or change settings
     """
     pygame.init()
-    surface = pygame.display.set_mode(game_size)
+    width, height = pygame.display.get_desktop_sizes()[0]
+    surface = pygame.display.set_mode((width // 2, height // 2))
     clock = pygame.time.Clock()
 
-    running = start_screen(surface, clock, FPS)
+    running = start_screen(surface, clock, FPS)  # анимация пока кривишна и некрасивишна, но не суть ;)
     while running:
-        pass
+        result = game(surface, clock, FPS)  # вот над функцией game ты и будешь работать. в нее передается все нужное
+        if result == -1:
+            running = False
 
     pygame.quit()
 
