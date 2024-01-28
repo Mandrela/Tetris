@@ -2,6 +2,16 @@ import pygame
 import math
 import time
 from icecream import ic
+from figures import *
+
+TILE = 45
+W, H = 10, 20
+
+grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE)
+        for x in range(10) for y in range(20)]
+
+
+anim_count, anim_speed, anim_limit = 0, 60, 2000
 
 
 class Effect:
@@ -106,6 +116,7 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
     text_flag = False
     dtime = 1
     while True:
+        dx = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return False
