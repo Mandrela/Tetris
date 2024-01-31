@@ -1,36 +1,25 @@
 from icecream import ic
-from figures import *
+from figures import TILE, H, W, figures, figure_rect  # так лучше контролируются значения переменных
+import pygame
 from copy import deepcopy
 from random import choice
+
 
 ic.disable()
 
 
-TILE = 45
-W, H = 10, 20
-game_size = W * TILE, H * TILE
-game_sc = pygame.display.set_mode(game_size)
+def game(clock: pygame.time.Clock, fps: int) -> int:
+    game_size = W * TILE, H * TILE  # убрал дубль
+    game_sc = pygame.display.set_mode(game_size)
 
-grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE)
-        for x in range(10) for y in range(20)]
-
-
-def game(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) -> int:  # не забудь вернуть счет
-    w, h = ic(surface.get_rect()[2:])  # вот пример как можно из surface достать размеры экрана
-    # Icecream - удобный дебаггер. Ф-ция ic выведет в stdout инфу о том, что ей передали, и вернет эти значения:
-    # т.е. в w и h запишутся нужные величины, а ты их сможешь увидеть. Если дебаг больше не нужен, раскомментируй строку
-    # в начале (вредно бегать по файлу и что-то удалять)
-    # P.S. Есть особенность: данные, пропущенные через ic(), теряют подсказки, т.к. IDE не понимает что вернет ic().
-
-    dtime = 1  # тоже очень важная штука: на разных компах разное кол-во fps. В анимациях, движениях и т.д. используй
-    # привязку к времени, а не к кадрам. dtime у тебя всегда будет равен времени, за которое отрисовался предыдущий
-    # кадр, в миллисекундах и всегда типа int. Читай строку ниже.
+    grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE)
+            for x in range(10) for y in range(20)]
 
     figure = deepcopy(choice(figures))
     anim_count, anim_speed, anim_limit = 0, 60, 2000
-    field = [[0 for i in range(W)] for j in range(H)]
+    field = [[0 for _ in range(W)] for _ in range(H)]  # почему нет ¯\_(ツ)_/¯
     score = 0
-    lines = 0
+    # lines = 0  pycharm говорит, что это не используется
     scores = {0: 0, 1: 100, 2: 300, 3: 700, 4: 1500}
 
     def check_borders():
@@ -72,8 +61,8 @@ def game(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) -> int:  #
             for i in range(4):
                 figure[i].y += 1
                 if not check_borders():
-                    for i in range(4):
-                        field[figure_old[i].y][figure_old[i].x] = pygame.Color('white')
+                    for j in range(4):  # тут переменная во внутреннем цикле называлась так же, как и во внешнем
+                        field[figure_old[j].y][figure_old[j].x] = pygame.Color('white')
                     figure = deepcopy(choice(figures))
                     anim_limit = 2000
                     break
@@ -103,11 +92,11 @@ def game(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) -> int:  #
                 line -= 1
             else:
                 lines += 1
-        old_score = int(str(score)[:])
+        # old_score = int(str(score)[:]) pycharm говорит, что это не используется
         score += scores[lines]
-        if score != old_score:
-            print(f'Score: {score}')
-            old_score = int(str(score)[:])
+        # if score != old_score: pycharm говорит, что это не используется
+        #     # print(f'Score: {score}') pycharm говорит, что это не используется
+        #     old_score = int(str(score)[:]) you guess it
 
         # draw grid
         [pygame.draw.rect(game_sc, (40, 40, 40), i_rect, 1) for i_rect in grid]
@@ -127,30 +116,22 @@ def game(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) -> int:  #
         for i in range(W):
             if field[0][i]:
                 field = [[0 for i in range(W)] for i in range(H)]
-                # anim_count, anim_speed, anim_limit = 0, 60, 2000
+                # anim_count, anim_speed, anim_limit = 0, 60, 2000 pycharm говорит, что это не используется
                 print('------------')
                 print(f'Game over!')
                 print(f'Total score: {score}')
                 print('------------')
                 return score
-                # score = 0  # можно раскомментировать и будет беск. игра
-
 
         pygame.display.flip()
-        dtime = clock.tick(fps)
+        clock.tick(fps)
 
 
-if __name__ == '__main__':  # очень удобная конструкция, если хочешь протестить отдельный элемент, именно поэтому мы
-    # разбивали все на несколько файлов
+if __name__ == '__main__':
     pygame.init()
     size = pygame.display.get_desktop_sizes()[0]
-    # size = (size[0] // 2, size[1] // 2)  # Вот тут можно регулировать размер экрана: на разных компах абсолютные
-    # значения ширины и высоты экрана разные, поэтому используй относительные размеры, отталкиваясь от переданных в
-    # функцию. Обязательно потести на разных значениях
-    surfaced = pygame.display.set_mode(game_size)
     clocc = pygame.time.Clock()
 
-    game(surfaced, clocc, 60)  # Твоя функция должна работать только с тем, что ей дали, если подтягивать что-то извне -
-    # сразу начинается жоска головна боль. Не делой так
+    game(clocc, 60)
 
     pygame.quit()
