@@ -2,16 +2,6 @@ import pygame
 import math
 import time
 from icecream import ic
-from figures import *
-
-TILE = 45
-W, H = 10, 20
-
-grid = [pygame.Rect(x * TILE, y * TILE, TILE, TILE)
-        for x in range(10) for y in range(20)]
-
-
-anim_count, anim_speed, anim_limit = 0, 60, 2000
 
 
 class Effect:
