@@ -1,5 +1,6 @@
 import pygame
 from start_screen import start_screen
+from result_screen import result_screen
 from game import game
 from icecream import ic
 
@@ -17,9 +18,12 @@ def main() -> None:
 
     running = start_screen(surface, clock, FPS)  # анимация пока кривишна и некрасивишна, но не суть ;)
     while running:
-        result = game(surface, clock, FPS)  # вот над функцией game ты и будешь работать. в нее передается все нужное
+        result = game(clock, FPS)
         if result == -1:
-            running = False
+            break
+        running, do_data = result_screen(surface, clock, FPS, result)
+        if do_data:  # запись в БД
+            pass
 
     pygame.quit()
 
