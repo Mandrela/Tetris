@@ -16,7 +16,7 @@ def main() -> None:
     surface = pygame.display.set_mode((width // 2, height // 2))
     clock = pygame.time.Clock()
 
-    running = start_screen(surface, clock, FPS)  # анимация пока кривишна и некрасивишна, но не суть ;)
+    running = start_screen(surface, clock, FPS)
     while running:
         result = game(clock, FPS)
         if result == -1:

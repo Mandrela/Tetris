@@ -22,29 +22,27 @@ class Effect:
 class StartAnim(Effect):
     def __init__(self, w, h):
         super().__init__(w, h, 5000)
-        self.oh = 0
 
         self.bg = pygame.Surface((w, h))
-        self.title_text = Text((w // 2, -500), ['The Tetris'])
+        self.title_text = Text((w // 2, -500), ['The Tetris'], text_size=w // 20)
         self.press_text = Text((w // 2, h // 5 * 4), ['Press any key', ' to continue'], color='#BBBBBB',
                                text_size=w // 50)
         self.press_text.set_alpha(0)
-        self.step = h / 2 / 500
 
     def play(self, surface: pygame.Surface, dtime: int):
         if self.secs <= 1000:
             surface.blit(self.bg, (0, 0))
         elif self.secs <= 1500:
             surface.blit(self.bg, (0, 0))
-            self.title_text.set_pos(self.w / 2, self.oh)
+            self.title_text.set_pos(self.w / 2, self.h // 2 * (self.secs - 1000) // 500)
             self.title_text.render(surface)
-            self.oh += self.step * dtime
-        elif 4000 <= self.secs:
+        elif self.secs <= 4000:
+            self.title_text.render(surface)
+            self.title_text.set_pos(self.w / 2, self.h // 2)
+        else:
             self.title_text.render(surface)
             self.press_text.set_alpha(round((self.secs - 4000) * 0.255))
             self.press_text.render(surface)
-        else:
-            self.title_text.render(surface)
 
         super().update(dtime)
 
@@ -100,7 +98,8 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
     """
 
     w, h = ic(surface.get_rect()[2:])
-    text = Text((w // 2, h // 5 * 4), ['Press any key', ' to continue'], color='#BBBBBB', text_size=w // 50, speed=5)
+    texts = [Text((w // 2, h // 5 * 4), ['Press any key', ' to continue'], color='#BBBBBB', text_size=w // 50, speed=5),
+             Text(ic(w // 2, h // 2), ['The Tetris'], text_size=w // 20)]
 
     bg = pygame.Surface((w, h))
     bg.fill('#010101')
@@ -122,7 +121,7 @@ def start_screen(surface: pygame.Surface, clock: pygame.time.Clock, fps: int) ->
                 end_anim_flag = False
         surface.blit(bg, (0, 0))
 
-        text.render(surface, dtime) if text_flag else None
+        [text.render(surface, dtime) for text in texts] if text_flag else None
 
         for effect in vfx[:]:
             if not effect:
