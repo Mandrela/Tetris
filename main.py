@@ -23,7 +23,7 @@ def main() -> None:
             break
         running, do_data = result_screen(surface, clock, FPS, result)
         if do_data:  # запись в БД
-            pass
+            print('data write')
 
     pygame.quit()
 
