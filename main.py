@@ -29,6 +29,7 @@ def main() -> None:
     Main body of the whole game. This like a container form where we can start the game or change settings
     """
     pygame.init()
+    pygame.display.set_caption('Tetris')
     width, height = pygame.display.get_desktop_sizes()[0]
     surface = pygame.display.set_mode((width // 2, height // 2))
     clock = pygame.time.Clock()
